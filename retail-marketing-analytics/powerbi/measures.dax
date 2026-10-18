@@ -1,0 +1,29 @@
+// ===== Date table =====
+Dim_Date = ADDCOLUMNS(CALENDAR(DATE(2022,1,1),DATE(2023,2,28)),"Year",YEAR([Date]),"Month No",MONTH([Date]),"Month",FORMAT([Date],"MMM yyyy"),"YearMonth",FORMAT([Date],"yyyy-mm"))
+// Mark as date table. Relationship: Dim_Date[Date] 1 -> * cleaned_retail_sales[Order_Date]  (Order_Date must be Date type)
+
+// ===== Sales =====
+Total Revenue = SUM(cleaned_retail_sales[Revenue])
+Total Profit = SUM(cleaned_retail_sales[Profit])
+Profit Margin % = DIVIDE([Total Profit],[Total Revenue])
+Total Orders = DISTINCTCOUNT(cleaned_retail_sales[Order_ID])
+Units Sold = SUM(cleaned_retail_sales[Quantity])
+AOV = DIVIDE([Total Revenue],[Total Orders])
+Customers = DISTINCTCOUNT(cleaned_retail_sales[Customer_ID])
+Revenue per Customer = DIVIDE([Total Revenue],[Customers])
+Revenue Prior Month = CALCULATE([Total Revenue], DATEADD(Dim_Date[Date],-1,MONTH))
+Revenue MoM % = DIVIDE([Total Revenue]-[Revenue Prior Month],[Revenue Prior Month])
+Revenue YTD = TOTALYTD([Total Revenue], Dim_Date[Date])
+Category Revenue Share % = DIVIDE([Total Revenue], CALCULATE([Total Revenue], ALL(cleaned_retail_sales[Product_Category])))
+
+// ===== Customers (tables: customer_segments, customer_clv; relate on Customer_ID, 1 -> *) =====
+Repeat Customers = CALCULATE(DISTINCTCOUNT(customer_clv[Customer_ID]), customer_clv[Order_Count] > 1)
+Repeat Customer Rate % = DIVIDE([Repeat Customers], DISTINCTCOUNT(customer_clv[Customer_ID]))
+Churned Customers = CALCULATE(DISTINCTCOUNT(customer_segments[Customer_ID]), customer_segments[Recency] > 180)   // no order in 180+ days
+Churn Rate % = DIVIDE([Churned Customers], DISTINCTCOUNT(customer_segments[Customer_ID]))
+Median CLV = MEDIAN(customer_clv[CLV_Simple])
+Mean CLV = AVERAGE(customer_clv[CLV_Simple])      // skewed by a few very large customers; prefer Median CLV
+Assumed CAC = 50
+CLV to CAC (median) = DIVIDE([Median CLV],[Assumed CAC])
+RFM Customers = DISTINCTCOUNT(customer_segments[Customer_ID])
+VIP Revenue Share % = DIVIDE(CALCULATE(SUM(customer_segments[Monetary]), customer_segments[Cluster_Name]="VIP Customers"), SUM(customer_segments[Monetary]))

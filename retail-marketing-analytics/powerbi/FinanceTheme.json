@@ -1,0 +1,4 @@
+{"name":"Finance Teal","dataColors":["#0F766E","#C2410C","#6B8F8A","#B8CBC8","#13211F","#B45309","#15803D","#B91C1C"],
+"background":"#FFFFFF","foreground":"#13211F","tableAccent":"#0F766E","good":"#15803D","neutral":"#B45309","bad":"#B91C1C",
+"textClasses":{"title":{"fontFace":"Segoe UI Semibold","fontSize":13,"color":"#13211F"},"label":{"fontFace":"Segoe UI","fontSize":10,"color":"#5B6B68"},"callout":{"fontFace":"Segoe UI Semibold","fontSize":24,"color":"#13211F"}},
+"visualStyles":{"page":{"*":{"background":[{"color":{"solid":{"color":"#EEF2F1"}},"transparency":0}]}},"*":{"*":{"border":[{"show":true,"color":{"solid":{"color":"#D6DFDD"}},"radius":6}]}}}}
